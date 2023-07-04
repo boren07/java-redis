@@ -1,5 +1,7 @@
 package com.borened.redis.util;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Collection;
 
 /**
@@ -10,6 +12,8 @@ import java.util.Collection;
  */
 public class StrUtil {
     public static final String OK = "ok!";
+
+    public static final String ZERO = "0";
     public static final String NIL = "nil";
 
     public static String convert(Object string){
@@ -35,5 +39,30 @@ public class StrUtil {
             return builder.append("\n").append(source).toString();
         }
 
+    }
+
+    public static String oneOrZero(boolean flag){
+        return flag ? "1" : "0";
+    }
+
+    public static String okMsg(){
+        return OK;
+    }
+    public static String errorMsg(String message){
+        if (message == null || message.length() == 0) {
+            return "(error)";
+        }
+        return "(error) " + message;
+    }
+
+
+
+    public static  String getClientId() {
+        try {
+            String hostAddress = InetAddress.getLocalHost().getHostAddress();
+            return hostAddress;
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

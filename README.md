@@ -1,23 +1,35 @@
 # java-redis
 
-#### 介绍
-基于java 控制台实现的一个仿redis的缓存数据库，具有NoSQL的一般功能特性，同时兼容redis常用的命令。开发该项目主要目的是用来学习redis命令和巩固java基础。
+#### 项目介绍
+java-redis是基于纯java语言实现的一个仿redis的缓存数据库，不依赖任何第三方框架。具有NoSQL的一般功能特性，同时兼容redis常用的命令。提供基于控制台的数据访问能力。
 
-#### 软件架构
-软件架构说明
+开发该项目主要初衷是用来学习redis命令和巩固java基础知识，学习该项目适合有一定java基础的朋友。欢迎有想法的朋友提供建议，一起学习。
 
+#### 项目技术要点
+1. 设计模式
+2. 网络编程
+3. redis命令
 
-#### 安装教程
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
 
 #### 使用说明
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1.  首次启动项目,需要安装maven依赖 ``maven clean install``。
+2.  找到Redis服务器启动类, `com.borened.redis.RedisServerStarter.main`,点击启动。
+3.  找到Redis客户端启动类，`com.borened.redis.RedisClientStarter.main`，点击启动。
+4.  在控制台随意输入redis命令，就可以开心的玩耍啦。。。
+
+#### 运行截图
+
+Server端
+
+![img_0.jpg](./doc/images/img_0.png)
+
+Client端（主要在客户端进行redis命令测试，目前适配了五大数据类型和key常用的命令。）
+
+![img_0.jpg](./doc/images/img_1.png)
+
+![img_0.jpg](./doc/images/img_2.png)
+
 
 #### 参与贡献
 
@@ -25,13 +37,11 @@
 2.  新建 Feat_xxx 分支
 3.  提交代码
 4.  新建 Pull Request
-   
 
-#### 特技
 
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+#### 未来计划
+
+1. 对redis 80%以上的命令的覆盖支持。✅
+2. 优化客户端连接的方式。❎
+3. 完善服务器监控信息。❎
+4. 打包正式版发布。❎
