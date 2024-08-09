@@ -2,8 +2,10 @@ package com.borened.redis.cmd;
 
 import com.borened.redis.*;
 import com.borened.redis.cmd.ops.*;
-import com.borened.redis.observer.KeyChangeObservableSingleton;
+import com.borened.redis.observer.KeyObservable;
+import com.borened.redis.util.SingletonFactory;
 import com.borened.redis.util.StrUtil;
+import com.borened.redis.util.ThreadFactoryBuilder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -51,11 +53,17 @@ public class CmdOpsExecutor {
         return scheduledExecutorService;
     }
 
-    public ScheduledFuture<?> schedule (Runnable runnable,long seconds){
+    public ScheduledFuture<?> schedule (Runnable runnable,long delaySeconds){
         //使用异步任务去删除
-        return scheduledExecutorService.schedule(runnable, seconds, TimeUnit.SECONDS);
+        return scheduledExecutorService.schedule(runnable, delaySeconds, TimeUnit.SECONDS);
     }
-    public String cmdExecute( String cmd) {
+
+    /**
+     * 客户端命令执行逻辑
+     * @param cmd
+     * @return
+     */
+    public String clientCmdExecute(String cmd) {
         if (cmd == null) {
             throw new RedisCmdException("cmd not be null");
         }
@@ -65,14 +73,15 @@ public class CmdOpsExecutor {
         }
         String clientId = StrUtil.getClientId();
         RedisDb redisDb = RedisServer.getDb(0);
-        if (CmdOpsContext.clientDbContextCache.containsKey(clientId)) {
-            redisDb = CmdOpsContext.clientDbContextCache.get(clientId);
+        if (CmdOpsContext.clientSession.containsKey(clientId)) {
+            redisDb = CmdOpsContext.clientSession.get(clientId);
         }
         CmdOpsContext ctx = new CmdOpsContext();
         ctx.setRedisDb(redisDb);
         ctx.setCmd(cmdArr[0]);
         ctx.setArgs(Arrays.copyOfRange(cmdArr, 1, cmdArr.length));
-        ctx.setKeyObservable(KeyChangeObservableSingleton.getInstance());
+        //todo 考虑aof重放,涉及过期key问题,需要考虑重写key到期的相关指令,expire,setex等
+        ctx.setKeyObservable(SingletonFactory.getSingleton(KeyObservable.class));
         for (RedisOps redisOps : redisOpsList) {
             if (redisOps.supports().contains(cmdArr[0].toLowerCase())) {
                 return actualExecute(ctx, redisOps);
@@ -81,6 +90,26 @@ public class CmdOpsExecutor {
         throw new RedisCmdException("unsupported cmd '" + cmd + "'");
     }
 
+    /**
+     * 内部服务命令执行
+     * @param cmd
+     * @param dbIndex
+     * @return
+     */
+    public String innerExecute(String cmd, int dbIndex) {
+        String[] cmdArr = cmd.split("\\s+");
+        CmdOpsContext ctx = new CmdOpsContext();
+        ctx.setRedisDb(RedisServer.getDb(dbIndex));
+        ctx.setCmd(cmdArr[0]);
+        ctx.setArgs(Arrays.copyOfRange(cmdArr, 1, cmdArr.length));
+        ctx.setKeyObservable(SingletonFactory.getSingleton(KeyObservable.class));
+        for (RedisOps redisOps : redisOpsList) {
+            if (redisOps.supports().contains(cmdArr[0].toLowerCase())) {
+                return actualExecute(ctx, redisOps);
+            }
+        }
+        throw new RedisCmdException("unsupported cmd '" + cmd + "'");
+    }
 
     private String actualExecute(CmdOpsContext ctx,RedisOps ops) {
         String result = StrUtil.NIL;
@@ -105,7 +134,7 @@ public class CmdOpsExecutor {
                 System.out.printf("当前线程:%s , 成功调度工作线程.执行结果：%s%n",Thread.currentThread().getName(),result);
             } catch (Exception e) {
                 e.printStackTrace();
-                throw new RedisCmdException("cmd syntax inner error！please see doc...");
+                throw new RedisCmdException(mainThread.getCmd());
             }finally {
                 isDoing = false;
             }
@@ -113,33 +142,7 @@ public class CmdOpsExecutor {
         return result;
     }
 
-    private static class ThreadFactoryBuilder {
-        private String nameFormat;
-        public ThreadFactoryBuilder setNameFormat(String nameFormat) {
-            this.nameFormat = nameFormat;
-            return this;
-        }
 
-        public ThreadFactory build() {
-            return new MyThreadFactory(nameFormat);
-        }
-
-
-        private static class MyThreadFactory implements ThreadFactory{
-            private int threadNumber;
-            private final String nameFormat;
-
-            public MyThreadFactory(String nameFormat) {
-                this.nameFormat = nameFormat;
-            }
-            @Override
-            public Thread newThread(Runnable r) {
-                threadNumber++;
-                return new Thread(r, String.format(nameFormat, threadNumber));
-            }
-        }
-
-    }
 
     private static class MainThread implements Callable<String> {
 
@@ -152,6 +155,10 @@ public class CmdOpsExecutor {
 
         public void setCtx(CmdOpsContext ctx) {
             this.ctx = ctx;
+        }
+
+        public String getCmd() {
+            return ctx.getCmd();
         }
 
         public MainThread(RedisOps redisOps, CmdOpsContext ctx) {

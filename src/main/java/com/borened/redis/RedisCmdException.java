@@ -8,6 +8,6 @@ package com.borened.redis;
 public class RedisCmdException extends RedisException {
 
     public RedisCmdException(String message) {
-        super("redis ops exception , please check your cmd , reason is ：【%s】",message);
+        super("please check your cmd syntax ！ error reason is ：【%s】",message);
     }
 }

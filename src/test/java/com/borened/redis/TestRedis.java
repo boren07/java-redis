@@ -1,6 +1,7 @@
 package com.borened.redis;
 
 import com.borened.redis.cmd.CmdOpsExecutor;
+import com.borened.redis.config.ConfigManager;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,7 +15,7 @@ public class TestRedis {
 
     @Before
     public void before(){
-        RedisServer.start();
+        RedisServer.start(ConfigManager.getConfigProperties());
     }
 
     @Test
@@ -25,11 +26,11 @@ public class TestRedis {
         for (int j = 0; j < 100; j++) {
             int i = j;
             executorService.submit(() -> {
-                opsExecutor.cmdExecute(String.format("set name%s value%s", i, i));
+                opsExecutor.clientCmdExecute(String.format("set name%s value%s", i, i));
                 countDownLatch.countDown();
             });
             executorService.submit(() -> {
-                opsExecutor.cmdExecute(String.format("get name%s value%s", i, i));
+                opsExecutor.clientCmdExecute(String.format("get name%s value%s", i, i));
                 countDownLatch.countDown();
             });
         }

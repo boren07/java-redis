@@ -17,4 +17,7 @@ public interface Constants {
     String SET = "set";
     String ZSET = "zset";
     String HASH = "hash";
+
+    String RDB = "rdb";
+    String AOF = "aof";
 }

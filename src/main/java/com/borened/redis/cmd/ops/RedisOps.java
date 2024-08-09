@@ -3,7 +3,9 @@ package com.borened.redis.cmd.ops;
 import com.borened.redis.RedisDb;
 import com.borened.redis.cmd.CmdOpsContext;
 import com.borened.redis.event.KeyChangeEvent;
+import com.borened.redis.observer.KeyObservable;
 
+import java.util.Observable;
 import java.util.Set;
 
 /**
@@ -30,7 +32,9 @@ public interface RedisOps {
         return null;
     }
     default void notifyKeyObservers(CmdOpsContext cmdContext, String key, RedisDb.MetaData oldVal, Object newVal) {
-        cmdContext.getKeyObservable().notifyObservers(oldVal !=null ?
+        //todo 更新观察者机制
+        KeyObservable observable = cmdContext.getKeyObservable();
+        observable.notifyObservers(oldVal !=null ?
                 KeyChangeEvent.updateOf(cmdContext.getRedisDb(), key, oldVal.getData(), newVal) : KeyChangeEvent.addOf(cmdContext.getRedisDb(), key, newVal));
     }
 }

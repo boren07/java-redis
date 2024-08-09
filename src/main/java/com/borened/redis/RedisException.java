@@ -12,19 +12,20 @@ public class RedisException extends RuntimeException{
     }
 
     public RedisException(String message) {
-        super(String.format("redis exception reason is ：【%s】",message));
+        super(String.format("redis exception ,%s",message));
     }
 
     public RedisException(String message, Throwable cause) {
-        super(String.format("redis exception reason is ：【%s】",message), cause);
+        super(String.format("redis exception ,%s",message), cause);
     }
 
     public RedisException(Throwable cause) {
         super(cause);
     }
 
-    protected RedisException(String message,String messageArgs) {
-        super(String.format(message , messageArgs));
+    protected RedisException(String message,Object... messageArgs) {
+        this(String.format(message , messageArgs));
     }
+
 
 }

@@ -17,6 +17,10 @@ public class KeyChangeEvent extends KeyEvent {
     private Object oldValue;
     private Object newValue;
 
+    /**
+     * 操作命令，set,hset.
+     */
+    private String cmd;
 
     private KeyChangeEvent(RedisDb redisDb,String key,KeyChangeTypeEnum type, Object newValue) {
         super(redisDb,key);
@@ -38,14 +42,16 @@ public class KeyChangeEvent extends KeyEvent {
     public static KeyChangeEvent updateOf(RedisDb redisDb,String key,Object oldValue,Object newValue){
         return new KeyChangeEvent(redisDb, key,oldValue, newValue);
     }
-    public static KeyChangeEvent expiredOf(RedisDb redisDb,String key, Object expValue){
-        return new KeyChangeEvent(redisDb, key, expValue);
-    }
+
 
     public static KeyChangeEvent addOf(RedisDb redisDb,String key,Object newValue){
         return new KeyChangeEvent(redisDb, key,KeyChangeTypeEnum.ADD, newValue);
     }
     public static KeyChangeEvent delOf(RedisDb redisDb,String key, Object rmValue){
         return new KeyChangeEvent(redisDb, key,KeyChangeTypeEnum.DEL, rmValue);
+    }
+
+    public static KeyChangeEvent expiredOf(RedisDb redisDb, String key, Object expiredVal){
+        return new KeyChangeEvent(redisDb, key, expiredVal);
     }
 }

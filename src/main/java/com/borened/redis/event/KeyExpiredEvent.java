@@ -1,5 +1,6 @@
 package com.borened.redis.event;
 
+
 import lombok.Data;
 
 /**
@@ -12,5 +13,7 @@ import lombok.Data;
 public class KeyExpiredEvent extends KeyEvent{
 
     private Long expiredAt;
+
+
 
 }

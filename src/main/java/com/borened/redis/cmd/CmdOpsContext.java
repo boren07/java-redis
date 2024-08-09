@@ -1,6 +1,7 @@
 package com.borened.redis.cmd;
 
 import com.borened.redis.RedisDb;
+import com.borened.redis.observer.KeyObservable;
 import lombok.Data;
 
 import java.util.Observable;
@@ -16,13 +17,17 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CmdOpsContext {
 
     private RedisDb redisDb;
-
+    /**
+     * 命令类型
+     */
     private String cmd;
 
     private String[] args;
 
-    private Observable keyObservable;
-
-    public static ConcurrentHashMap<String,RedisDb> clientDbContextCache = new ConcurrentHashMap<>();
+    private KeyObservable keyObservable;
+    /**
+     * 客户端会话,连接id-访问的数据库
+     */
+    public static ConcurrentHashMap<String,RedisDb> clientSession = new ConcurrentHashMap<>();
 
 }

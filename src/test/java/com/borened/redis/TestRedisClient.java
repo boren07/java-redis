@@ -30,7 +30,7 @@ public class TestRedisClient {
                 Scanner input = new Scanner(System.in);
                 String cmd = input.nextLine();
                 System.out.println("你输入了命令："+ cmd);
-                String result = opsExecutor.cmdExecute(cmd);
+                String result = opsExecutor.clientCmdExecute(cmd);
                 System.out.println(result);
             } catch (RedisException e) {
                 System.err.println(e.getMessage());

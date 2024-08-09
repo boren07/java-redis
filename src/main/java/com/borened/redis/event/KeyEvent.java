@@ -16,8 +16,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class KeyEvent {
 
+    /**
+     * 数据库
+     */
     private RedisDb redisDb;
-
+    /**
+     * 操作key
+     */
     private String key;
+
 
 }

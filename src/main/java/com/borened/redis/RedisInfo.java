@@ -4,20 +4,21 @@ import com.borened.redis.event.KeyChangeEvent;
 import com.borened.redis.event.KeyChangeTypeEnum;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * redis数据类
+ * redis数据类.整个redis库的访问主类
  *
  * @author cch
  * @since 2023/6/30
  */
 
 @Data
-public class RedisInfo implements Observer {
+public class RedisInfo implements Observer, Serializable {
 
 
     private final String os;
