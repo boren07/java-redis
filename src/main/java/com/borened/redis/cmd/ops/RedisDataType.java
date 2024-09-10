@@ -13,5 +13,6 @@ public enum RedisDataType {
     SET,
     ZSET,
     HASH,
+    GEO
     ;
 }

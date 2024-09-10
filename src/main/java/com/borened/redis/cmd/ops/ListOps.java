@@ -15,8 +15,8 @@ public class ListOps implements RedisOps {
     @Override
     public Set<String> supports() {
         return new HashSet<>(Arrays.asList("lpush","lpushx","rpush","rpushx",
-                "lpop", "rpop",  "lrem",
-                "llen","lrange"
+                "lpop", "rpop",
+                "llen","lrange", "lrem"
 
         ));
     }

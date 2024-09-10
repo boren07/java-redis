@@ -146,4 +146,10 @@ public class SetOps implements RedisOps {
         }
         return result;
     }
+
+
+    @Override
+    public RedisDataType type() {
+        return RedisDataType.SET;
+    }
 }

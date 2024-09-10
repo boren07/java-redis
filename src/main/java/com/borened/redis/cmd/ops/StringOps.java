@@ -61,6 +61,32 @@ public class StringOps implements RedisOps {
                 }
                 result = StrUtil.pretty(res);
                 break;
+            case "incr":
+                String key2 = args[0];
+                RedisDb.MetaData oldVal = data.get(key2);
+                long val;
+                if (oldVal == null){
+                    val=1;
+                    data.put(key2,new RedisDb.MetaData(val));
+                }else {
+                    val = (Long) (oldVal.getData())+1;
+                    oldVal.setData(val);
+                }
+                result = String.valueOf(val);
+                break;
+            case "decr":
+                String key3 = args[0];
+                RedisDb.MetaData o1 = data.get(key3);
+                long val1;
+                if (o1 == null){
+                    val1=-1;
+                    data.put(key3,new RedisDb.MetaData(val1));
+                }else {
+                    val1 = (Long) (o1.getData())-1;
+                    o1.setData(val1);
+                }
+                result = String.valueOf(val1);
+                break;
             default:
                 break;
         }

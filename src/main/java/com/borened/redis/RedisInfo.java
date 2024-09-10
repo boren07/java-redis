@@ -58,4 +58,14 @@ public class RedisInfo implements Observer, Serializable {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "RedisInfo{" +
+                "os='" + os + '\'' +
+                ", redisDbs=" + redisDbs +
+                ", clientNum=" + clientNum +
+                ", memorySize=" + memorySize +
+                '}';
+    }
 }

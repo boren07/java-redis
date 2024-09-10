@@ -13,12 +13,16 @@ import java.util.Set;
 public class ZSetOps implements RedisOps {
     @Override
     public Set<String> supports() {
-        return new HashSet<>(Arrays.asList("sadd","srem","smembers","sismember","scard","smove",
-                "spop","srandmember","sinter","sinterstore","sunion","sunionstore","sdiff","sdiffstore"));
+        return new HashSet<>(Arrays.asList("zadd","zcard","zcount","zincrby","zlexcount","zrange","zrank","zrem","zscore","zscan"));
     }
 
     @Override
     public String exec(CmdOpsContext ctx) {
         return null;
+    }
+
+    @Override
+    public RedisDataType type() {
+        return RedisDataType.ZSET;
     }
 }

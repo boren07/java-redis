@@ -5,6 +5,7 @@ import com.borened.redis.db.DatabaseEngine;
 import com.borened.redis.observer.KeyObservable;
 import com.borened.redis.util.SingletonFactory;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Observable;
 import java.util.concurrent.locks.ReentrantLock;
@@ -40,6 +41,7 @@ public class RedisServer {
             redisInfo= SingletonFactory.getSingleton(RedisInfo.class);
             //注册观察者
             SingletonFactory.getSingleton(KeyObservable.class).addObserver(redisInfo);
+            isRunning = true;
         } catch (Exception e) {
             throw new RedisException(e);
         } finally {
@@ -48,8 +50,32 @@ public class RedisServer {
 
     }
 
+    /**
+     * 服务器关闭时应该执行的必要事件
+     */
     public static void stop() {
-
+        LOCK.lock();
+        try {
+            DatabaseEngine engine = SingletonFactory.getSingleton(DatabaseEngine.class);
+            try {
+                DatabaseEngine.rdbPersistence.store(redisInfo, DatabaseEngine.RDB_DATA_DIR);
+            } catch (IOException e) {
+                System.err.println("rdb save error...");
+                e.printStackTrace();
+            }
+            try {
+                DatabaseEngine.aofPersistence.store(engine.getAofCacheCommands(), DatabaseEngine.AOF_DATA_DIR);
+                engine.getAofCacheCommands().forEach(List::clear);
+            } catch (IOException e) {
+                System.err.println("aof save error...");
+                e.printStackTrace();
+            }
+            isRunning = false;
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            LOCK.unlock();
+        }
     }
 
 

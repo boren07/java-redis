@@ -33,6 +33,7 @@ public class AofPersistence implements Persistence<ArrayList<List<String>>> {
             }
         }
 
+        rewriteOptimizeStorageSpace(file);
     }
 
     @Override

@@ -17,6 +17,8 @@ import java.net.Socket;
 public class RedisServerStarter {
 
     public static void main(String[] args) throws IOException {
+        //绑定程序关闭时的钩子
+        Runtime.getRuntime().addShutdownHook(new Thread(RedisServer::stop));
         run();
     }
 

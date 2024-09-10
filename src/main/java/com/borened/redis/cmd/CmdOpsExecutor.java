@@ -69,7 +69,7 @@ public class CmdOpsExecutor {
         }
         String[] cmdArr = cmd.split("\\s+");
         if (cmdArr.length <= 1) {
-            throw new RedisCmdException("cmd length must least 2！");
+            throw new RedisCmdException("cmd length must least 1！");
         }
         String clientId = StrUtil.getClientId();
         RedisDb redisDb = RedisServer.getDb(0);

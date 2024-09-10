@@ -40,12 +40,16 @@ public class DatabaseEngine implements Observer {
     public static final File RDB_DATA_DIR = new File("/db" + File.separator + "dump.rdb");
     public static final File AOF_DATA_DIR = new File("/db" + File.separator + "dump.aof");
 
-    public ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
-    public ArrayList<List<String>> aofCacheCommands= new ArrayList<>(DB_ARR.length);
+    private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
+    private final ArrayList<List<String>> aofCacheCommands= new ArrayList<>(DB_ARR.length);
 
     static {
         ConfigProperties configProperties = ConfigManager.getConfigProperties();
         PERSISTENCE_MODE = configProperties.getPersistenceMode();
+    }
+
+    public ArrayList<List<String>> getAofCacheCommands() {
+        return aofCacheCommands;
     }
 
     public DatabaseEngine(){
@@ -62,7 +66,6 @@ public class DatabaseEngine implements Observer {
         } else if (Constants.AOF.equals(PERSISTENCE_MODE)) {
             startScheduleAofSave();
             SingletonFactory.getSingleton(KeyObservable.class).addObserver(this);
-            aofPersistence.rewriteOptimizeStorageSpace(AOF_DATA_DIR);
         }
 
     }
@@ -167,7 +170,7 @@ public class DatabaseEngine implements Observer {
         },0,10, TimeUnit.SECONDS);
     }
 
-    private void startScheduleAofSave() {
+    public void startScheduleAofSave() {
         scheduledExecutorService.scheduleAtFixedRate(() -> {
             try {
                 aofPersistence.store(aofCacheCommands, AOF_DATA_DIR);
