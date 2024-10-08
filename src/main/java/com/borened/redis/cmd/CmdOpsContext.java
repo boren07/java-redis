@@ -21,8 +21,15 @@ public class CmdOpsContext {
      * 命令类型
      */
     private String cmd;
-
+    /**
+     * 用户输入命令占位参数
+     */
     private String[] args;
+
+    /**
+     * 服务内部占位参数
+     */
+    private String[] innerPlaceholderArgs;
 
     private KeyObservable keyObservable;
     /**

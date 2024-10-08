@@ -118,7 +118,7 @@ public class CommonOps implements RedisOps {
                 if (!data.containsKey(args[0])) {
                     result  = StrUtil.errorMsg("no such key");
                 }else {
-                    redisDb.registerKeyExpireEvent(args[0], Long.parseLong(args[1]),Long.parseLong(args[2]));
+                    redisDb.registerKeyExpireEvent(args[0], Long.parseLong(args[1]),Long.parseLong(cmdContext.getInnerPlaceholderArgs()[0]));
                     result = StrUtil.oneOrZero(true);
                 }
                 break;

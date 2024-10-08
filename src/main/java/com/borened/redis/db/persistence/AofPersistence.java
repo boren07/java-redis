@@ -50,6 +50,7 @@ public class AofPersistence implements Persistence<ArrayList<List<String>>> {
                 if (line.startsWith(SELECT_DB_PREFIX)) {
                     dbIndex = Integer.parseInt(line.substring(7));
                 }else {
+                    //todo 如果是到期命令，则需要重新计算到期时间
                     aofCmds.get(dbIndex).add(line);
                 }
             }

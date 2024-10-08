@@ -1,9 +1,16 @@
 package com.borened.redis.db.persistence;
 
+import com.borened.redis.RedisDb;
 import com.borened.redis.RedisInfo;
+import com.borened.redis.event.KeyChangeEvent;
+import com.borened.redis.observer.KeyObservable;
+import com.borened.redis.util.SingletonFactory;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author chengcaihua
@@ -30,6 +37,18 @@ public class RdbPersistence implements Persistence<RedisInfo> {
         ObjectInputStream inputStream = new ObjectInputStream(Files.newInputStream(file.toPath()));
         Object data = inputStream.readObject();
         inputStream.close();
-        return (RedisInfo) data;
+        RedisInfo redisInfo = (RedisInfo) data;
+        List<RedisDb> redisDbs = redisInfo.getRedisDbs();
+        for (RedisDb redisDb : redisDbs) {
+            Set<String> expiredKeys = new HashSet<>();
+            redisDb.getData().forEach((key, metaData)->{
+                if (metaData.getExpireAt()<=System.currentTimeMillis()) {
+                    expiredKeys.add(key);
+                    SingletonFactory.getSingleton(KeyObservable.class).notifyObservers(KeyChangeEvent.expiredOf(redisDb, key, metaData.getData()));
+                }
+            });
+            expiredKeys.forEach(k->redisDb.getData().remove(k));
+        }
+        return redisInfo;
     }
 }

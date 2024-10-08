@@ -1,6 +1,7 @@
 package com.borened.redis;
 
 /**
+ * 命令语法异常
  * @author cch
  * @since 2023/6/30
  */

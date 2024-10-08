@@ -80,7 +80,11 @@ public class CmdOpsExecutor {
         ctx.setRedisDb(redisDb);
         ctx.setCmd(cmdArr[0]);
         ctx.setArgs(Arrays.copyOfRange(cmdArr, 1, cmdArr.length));
-        //todo 考虑aof重放,涉及过期key问题,需要考虑重写key到期的相关指令,expire,setex等
+        //到期命令设置单独的占位符
+        if (ctx.getCmd().equals("expire") || ctx.getCmd().equals("setex")) {
+            long seconds = Long.parseLong(ctx.getArgs()[1]);
+            ctx.setInnerPlaceholderArgs(new String[]{String.valueOf(System.currentTimeMillis())+seconds});
+        }
         ctx.setKeyObservable(SingletonFactory.getSingleton(KeyObservable.class));
         for (RedisOps redisOps : redisOpsList) {
             if (redisOps.supports().contains(cmdArr[0].toLowerCase())) {

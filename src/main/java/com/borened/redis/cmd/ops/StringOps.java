@@ -46,7 +46,7 @@ public class StringOps implements RedisOps {
                 long seconds = Long.parseLong(args[1]);
                 String value = args[2];
                 RedisDb.MetaData oldVal2 = data.put(key, new RedisDb.MetaData(value));
-                redisDb.registerKeyExpireEvent(key,seconds,Long.parseLong(args[3]));
+                redisDb.registerKeyExpireEvent(key,seconds,Long.parseLong(cmdContext.getInnerPlaceholderArgs()[0]));
                 result =  StrUtil.OK;
 
                 notifyKeyObservers(cmdContext, key, oldVal2,value);

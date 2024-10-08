@@ -1,6 +1,5 @@
 package com.borened.redis;
 
-import com.borened.redis.cmd.CmdOpsExecutor;
 
 import java.io.*;
 import java.net.Socket;
@@ -21,7 +20,6 @@ public class RedisClientStarter {
 
 
     public static void run() throws IOException {
-        CmdOpsExecutor opsExecutor = CmdOpsExecutor.getInstance();
         //注册观察者
         System.out.println("欢迎来到Java-redis,请输入命令并按Enter键执行");
         Scanner scanner = new Scanner(System.in);

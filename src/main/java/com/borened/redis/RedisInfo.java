@@ -19,12 +19,25 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Data
 public class RedisInfo implements Observer, Serializable {
+    private static final long serialVersionUID = 1L;
 
-
+    /**
+     * 当前系统名称
+     */
     private final String os;
 
+    /**
+     * redis数据库分片
+     */
     private List<RedisDb> redisDbs;
+
+    /**
+     * 活跃的客户端数量
+     */
     private volatile AtomicInteger clientNum;
+    /**
+     * 当前内存占用大小
+     */
     private volatile AtomicInteger memorySize;
 
 
